@@ -13,12 +13,16 @@ data GitObject = GoBlob   Size Blob
                deriving (Eq,Show)
 
 data GitType     = GtBlob  | GtTree  | GtCommit  | GtTag deriving (Eq,Show)
-data GitTreeType = GttBlob | GttTree | GttCommit deriving (Eq,Show)
 
 type Blob = ByteString
 
-data GitTreeEntry = GitTreeEntry GitTreeType FileMode FilePath SHA1
-                    deriving (Eq,Show)
+data FileType = RegularFile FileMode
+              | Directory
+              | SymbolicLink
+              | GitLink
+              deriving (Eq,Show)
+
+data GitTreeEntry = GitTreeEntry FileType FilePath SHA1 deriving (Eq,Show)
 
 newtype SHA1 = SHA1 String deriving Eq
 

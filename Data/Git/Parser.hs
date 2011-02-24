@@ -3,12 +3,14 @@
 module Data.Git.Parser (gitObject) where
 
 import Control.Applicative hiding (many)
-import qualified Data.Attoparsec.Char8 as AP (take)
 import qualified Data.Attoparsec as AP (takeWhile)
+import qualified Data.Attoparsec.Char8 as AP (take)
 import Data.Attoparsec.Char8 hiding (take)
-import qualified Data.ByteString.Char8 as BS (unpack)
+import Data.Bits
 import qualified Data.ByteString as BS (foldl')
+import qualified Data.ByteString.Char8 as BS (unpack)
 import Data.Git.Types
+import System.Posix.Types (FileMode)
 
 ----------------------------------------------------------------
 
@@ -43,10 +45,21 @@ tree :: Parser [GitTreeEntry]
 tree = many1 entry
 
 entry :: Parser GitTreeEntry
-entry = GitTreeEntry GttBlob <$> mode <*> filepath <*> sha1
+entry = GitTreeEntry <$> (filetype <* spc)
+                     <*> (filepath <* nul)
+                     <*> sha1
   where
-    mode = fromIntegral <$> octal <* spc
-    filepath = (many1 $ noneOf "\0") <* nul
+    filepath = many1 $ noneOf "\0"
+
+filetype :: Parser FileType
+filetype = getType . fromIntegral <$> octal
+  where
+    getMode x = x .&. 0o7777
+    getType x
+      | x .&. 0o0040000 == 0o0040000 = Directory
+      | x .&. 0o0120000 == 0o0120000 = SymbolicLink
+      | x .&. 0o0160000 == 0o0160000 = GitLink
+      | otherwise                    = RegularFile (getMode x)
 
 ----------------------------------------------------------------
 
