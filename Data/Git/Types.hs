@@ -8,11 +8,11 @@ import System.Posix.Types (FileMode)
 type Size = Int
 data GitObject = GoBlob   Size Blob
                | GoTree   Size [GitTreeEntry]
-               | GoCommit Size ByteString -- FIXME
+               | GoCommit Size GitCommit
                | GoTag    Size ByteString -- FIXME
                deriving (Eq,Show)
 
-data GitType     = GtBlob  | GtTree  | GtCommit  | GtTag deriving (Eq,Show)
+data GitType = GtBlob | GtTree | GtCommit | GtTag deriving (Eq,Show)
 
 type Blob = ByteString
 
@@ -24,8 +24,13 @@ data FileType = RegularFile FileMode
 
 data GitTreeEntry = GitTreeEntry FileType FilePath SHA1 deriving (Eq,Show)
 
+data GitCommit = GitCommit SHA1 [SHA1] Author Committer LogMsg deriving (Eq,Show)
+type Author = ByteString
+type Committer = ByteString
+type LogMsg = ByteString
+
 newtype SHA1 = SHA1 String deriving Eq
 
 instance Show SHA1 where
-    show (SHA1 x) = foldr (.) id (map (showHex . ord) x) $ ""
+    show (SHA1 x) = x
 
