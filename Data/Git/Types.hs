@@ -3,9 +3,10 @@ module Data.Git.Types where
 import Data.ByteString (ByteString)
 import Data.Char
 import Numeric
+import System.Posix.Types (FileMode)
 
 type Size = Int
-data GitObject = GoBlob   Size ByteString
+data GitObject = GoBlob   Size Blob
                | GoTree   Size [GitTreeEntry]
                | GoCommit Size ByteString -- FIXME
                | GoTag    Size ByteString -- FIXME
@@ -14,8 +15,9 @@ data GitObject = GoBlob   Size ByteString
 data GitType     = GtBlob  | GtTree  | GtCommit  | GtTag deriving (Eq,Show)
 data GitTreeType = GttBlob | GttTree | GttCommit deriving (Eq,Show)
 
-type Mode = Int
-data GitTreeEntry = GitTreeEntry GitTreeType Mode FilePath SHA1
+type Blob = ByteString
+
+data GitTreeEntry = GitTreeEntry GitTreeType FileMode FilePath SHA1
                     deriving (Eq,Show)
 
 newtype SHA1 = SHA1 String deriving Eq
