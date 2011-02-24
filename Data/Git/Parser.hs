@@ -21,7 +21,7 @@ gitObject = do
         GtBlob   -> GoBlob   len <$> blob len
         GtTree   -> GoTree   len <$> tree
         GtCommit -> GoCommit len <$> commit
-        GtTag    -> GoTag    len <$> AP.take len -- FIXME
+        GtTag    -> GoTag    len <$> tag
 
 ----------------------------------------------------------------
 
@@ -72,6 +72,18 @@ commit = GitCommit <$> tre <*> parents <*> author <*> committer <*> logmsg
     author    = string "author "    *> line
     committer = string "committer " *> line
     logmsg = endOfLine *> AP.takeWhile (const True) <* endOfInput
+    line = AP.takeWhile (not.isEndOfLine) <* endOfLine
+
+----------------------------------------------------------------
+
+tag :: Parser GitTag
+tag = GitTag <$> obj <*> typ <*> name <*> tagger <*> tagmsg
+  where
+    obj    = string "object " *> sha1 <* endOfLine
+    typ    = string "type "   *> line
+    name   = string "tag "    *> line
+    tagger = string "tagger " *> line
+    tagmsg = endOfLine *> AP.takeWhile (const True) <* endOfInput
     line = AP.takeWhile (not.isEndOfLine) <* endOfLine
 
 ----------------------------------------------------------------
