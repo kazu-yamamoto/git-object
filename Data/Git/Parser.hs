@@ -79,7 +79,7 @@ commit = GitCommit <$> tre <*> parents <*> author <*> committer <*> logmsg
 binarySha1 :: Parser SHA1
 binarySha1 = SHA1 . (flip toASCII "") <$> AP.take 20
   where
-    toASCII = BS.foldr (\w shows -> showHex w . shows) id
+    toASCII = BS.foldr (\w ss -> showHex w . ss) id
 
 sha1 :: Parser SHA1
 sha1 = SHA1 . BS.unpack <$> AP.take 40

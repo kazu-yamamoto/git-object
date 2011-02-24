@@ -1,8 +1,6 @@
 module Data.Git.Types where
 
 import Data.ByteString (ByteString)
-import Data.Char
-import Numeric
 import System.Posix.Types (FileMode)
 
 type Size = Int
