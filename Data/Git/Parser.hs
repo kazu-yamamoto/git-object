@@ -46,7 +46,7 @@ entry :: Parser GitTreeEntry
 entry = GitTreeEntry GttBlob <$> mode <*> filepath <*> sha1
   where
     mode = fromIntegral <$> octal <* spc
-    filepath = many1 $ noneOf "\0" <* nul
+    filepath = (many1 $ noneOf "\0") <* nul
 
 ----------------------------------------------------------------
 
@@ -56,7 +56,7 @@ sha1 = SHA1 . BS.unpack <$> AP.take 20
 octal :: Parser Int
 octal = BS.foldl' step 0 <$> AP.takeWhile isDig
   where
-    isDig w  = w >= 48 && w <= 55
+    isDig w  = 48 <= w && w <= 55
     step a w = a * 8 + fromIntegral (w - 48)
 
 ----------------------------------------------------------------
