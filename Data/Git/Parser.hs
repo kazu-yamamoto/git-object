@@ -64,25 +64,25 @@ filetype = getType . fromIntegral <$> octal
 ----------------------------------------------------------------
 
 commit :: Parser GitCommit
-commit = GitCommit <$> tre <*> parents <*> author <*> committer <*> logmsg
+commit = GitCommit <$> tre <*> parents <*> author <*> owner <*> logmsg
   where
     tre       = string "tree "   *> sha1 <* endOfLine
     parents   = many parent
     parent    = string "parent " *> sha1 <* endOfLine
     author    = string "author "    *> line
-    committer = string "committer " *> line
-    logmsg = endOfLine *> AP.takeWhile (const True) <* endOfInput
+    owner     = string "committer " *> line
+    logmsg    = endOfLine *> AP.takeWhile (const True) <* endOfInput
     line = AP.takeWhile (not.isEndOfLine) <* endOfLine
 
 ----------------------------------------------------------------
 
 tag :: Parser GitTag
-tag = GitTag <$> obj <*> typ <*> name <*> tagger <*> tagmsg
+tag = GitTag <$> obj <*> typ <*> name <*> owner <*> tagmsg
   where
     obj    = string "object " *> sha1 <* endOfLine
     typ    = string "type "   *> line
     name   = string "tag "    *> line
-    tagger = string "tagger " *> line
+    owner  = string "tagger " *> line
     tagmsg = endOfLine *> AP.takeWhile (const True) <* endOfInput
     line = AP.takeWhile (not.isEndOfLine) <* endOfLine
 
