@@ -56,10 +56,11 @@ filetype = getType . fromIntegral <$> octal
   where
     getMode x = x .&. 0o7777
     getType x
-      | x .&. 0o0040000 == 0o0040000 = Directory
-      | x .&. 0o0120000 == 0o0120000 = SymbolicLink
-      | x .&. 0o0160000 == 0o0160000 = GitLink
-      | otherwise                    = RegularFile (getMode x)
+      | isBitSet x 0o0040000 = Directory
+      | isBitSet x 0o0120000 = SymbolicLink
+      | isBitSet x 0o0160000 = GitLink
+      | otherwise            = RegularFile (getMode x)
+    isBitSet x mask = x .&. mask == mask
 
 ----------------------------------------------------------------
 
