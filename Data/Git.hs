@@ -3,7 +3,7 @@ module Data.Git (parseGitObject, module Data.Git.Types) where
 import Codec.Zlib.Enum
 import Data.Attoparsec.Enumerator
 import Data.ByteString (ByteString)
-import Data.Enumerator
+import Data.Enumerator hiding (drop)
 import qualified Data.Enumerator.Binary as EB
 import Data.Git.Parser
 import Data.Git.Types

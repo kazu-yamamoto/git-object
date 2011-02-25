@@ -10,7 +10,7 @@ import Data.Bits
 import qualified Data.ByteString as BS (foldl', foldr)
 import qualified Data.ByteString.Char8 as BS (unpack)
 import Data.Git.Types
-import Numeric
+import Data.Char
 
 ----------------------------------------------------------------
 
@@ -92,7 +92,17 @@ tag = GitTag <$> obj <*> typ <*> name <*> owner <*> tagmsg
 binarySha1 :: Parser SHA1
 binarySha1 = SHA1 . (flip toASCII "") <$> AP.take 20
   where
-    toASCII = BS.foldr (\w ss -> showHex w . ss) id
+    toASCII = BS.foldr (\w ss -> toHex w . ss) id
+    toHex w = let (u,d) = w `divMod` 16
+                  hex2 = toH u : toH d : []
+              in (hex2 ++)
+    toH w
+      | w >= 10   = chr $ baseA + (w' - 10)
+      | otherwise = chr $ base0 + w'
+      where
+        w' = fromIntegral w
+    baseA = ord 'a'
+    base0 = ord '0'
 
 sha1 :: Parser SHA1
 sha1 = SHA1 . BS.unpack <$> AP.take 40
