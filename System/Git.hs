@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module System.Git where
+module System.Git (pathToObj) where
 
 import Control.Applicative
 import Control.Exception
@@ -19,8 +19,15 @@ instance Exception GitError
 
 ----------------------------------------------------------------
 
-pathToObj :: FilePath -> IO GitObject
-pathToObj path = findGitDir >>= \gdir ->
+pathToObj :: FilePath -> IO (Either SomeException GitObject)
+pathToObj path = pathtoobj `catch` errorhandle
+  where
+   pathtoobj = pathToObj' path >>= return . Right
+   errorhandle :: SomeException -> IO (Either SomeException GitObject)
+   errorhandle = return . Left
+
+pathToObj' :: FilePath -> IO GitObject
+pathToObj' path = findGitDir >>= \gdir ->
     getRootSha1 gdir >>= sha1ToObj gdir >>= search gdir ps
   where
     ps = tail $ splitFilePath path
