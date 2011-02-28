@@ -8,6 +8,10 @@ import qualified Data.Enumerator.Binary as EB
 import Data.Git.Parser
 import Data.Git.Types
 
+{-|
+  Parsing a Git file to @GitObject@.
+  This parser based on attoparsec-enumerator.
+-}
 parseGitObject :: FilePath -> IO GitObject
 parseGitObject file = run_ $ EB.enumFile file
                           $$ decompress defaultWindowBits
