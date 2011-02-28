@@ -1,3 +1,7 @@
+{-|
+  Types for Git objects and a parser of Git object files.
+-}
+
 module Data.Git (parseGitObject, module Data.Git.Types) where
 
 import Codec.Zlib.Enum
@@ -9,7 +13,7 @@ import Data.Git.Parser
 import Data.Git.Types
 
 {-|
-  Parsing a Git file to @GitObject@.
+  Parsing a Git file to 'GitObject'.
   This parser based on attoparsec-enumerator.
 -}
 parseGitObject :: FilePath -> IO GitObject

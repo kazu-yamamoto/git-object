@@ -1,5 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
+{-|
+  Manipulating 'GitObject'.
+-}
+
 module System.Git (
     gitPathToGitObject
   , GitError(..)
@@ -41,7 +45,7 @@ instance Exception GitError
 ----------------------------------------------------------------
 
 {-|
-  Getting @GitObject@ of @GoBlob@/@GoTree@ corresponding to @GitPath@.
+  Getting 'GitObject' of 'GoBlob'/'GoTree' corresponding to 'GitPath'.
 -}
 gitPathToGitObject :: GitPath -> IO (Either SomeException GitObject)
 gitPathToGitObject path = pathtoobj `catch` errorhandle
@@ -51,13 +55,13 @@ gitPathToGitObject path = pathtoobj `catch` errorhandle
    errorhandle = return . Left
 
 {-|
-  Getting @GitObject@ of @GoBlob@/@GoTree@ corresponding to @GitPath@.
+  Getting 'GitObject' of 'GoBlob'/'GoTree' corresponding to 'GitPath'.
 -}
 gitPathToObj :: GitPath -> GitDir -> IO GitObject
 gitPathToObj path gitDir = gitPathToSha1 path gitDir >>= flip sha1ToObj gitDir
 
 {-|
-  Getting @SHA1@ corresponding to @GitPath@.
+  Getting 'SHA1' corresponding to 'GitPath'.
 -}
 gitPathToSha1 :: GitPath -> GitDir -> IO SHA1
 gitPathToSha1 path gitDir = do
@@ -97,13 +101,13 @@ lokup key (e:es)
 ----------------------------------------------------------------
 
 {-|
-  Getting @GitObject@ of @GoBlob@ corresponding to the project root.
+  Getting 'GitObject' of 'GoBlob' corresponding to the project root.
 -}
 rootCommitObj :: GitDir -> IO GitObject
 rootCommitObj gitDir = rootSha1 gitDir >>= flip sha1ToObj gitDir
 
 {-|
-  Getting @SHA1@ of the project root.
+  Getting 'SHA1' of the project root.
 -}
 rootSha1 :: GitDir -> IO SHA1
 rootSha1 gitDir = SHA1 <$> (getRootRefFile gitDir >>= readFileLine)
@@ -117,7 +121,7 @@ getRootRefFile gitDir = fieldToFile <$> readFileLine headFile
 ----------------------------------------------------------------
 
 {-|
-  Finding @GitDir@ by tracking from the current directory
+  Finding 'GitDir' by tracking from the current directory
   to the root of the file system.
 -}
 findGitDir :: IO GitDir
@@ -135,13 +139,13 @@ findGitDir = getCurrentDirectory >>= loop
 ----------------------------------------------------------------
 
 {-|
-  Getting @GitObject@ according to @SHA1@.
+  Getting 'GitObject' according to 'SHA1'.
 -}
 sha1ToObj :: SHA1 -> GitDir -> IO GitObject
 sha1ToObj sha gitDir = parseGitObject $ sha1ToObjFile sha gitDir
 
 {-|
-  Getting @FilePath@ to the Git object file according to @SHA1@.
+  Getting 'FilePath' to the Git object file according to 'SHA1'.
 -}
 sha1ToObjFile :: SHA1 -> GitDir -> FilePath
 sha1ToObjFile (SHA1 hash) gitDir =
