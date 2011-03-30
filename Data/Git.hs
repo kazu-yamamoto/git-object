@@ -23,7 +23,3 @@ parseGitObject file = run_ $ EB.enumFile file
 
 iterGitObject :: Iteratee ByteString IO GitObject
 iterGitObject = iterParser gitObject
-
-infixr 0 =$
-(=$) :: Monad m => Enumeratee ao ai m b -> Iteratee ai m b -> Iteratee ao m b
-ee =$ ie = joinI $ ee $$ ie
