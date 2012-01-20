@@ -2,7 +2,7 @@
 
 module Data.Git.Parser (gitObject) where
 
-import Control.Applicative hiding (many)
+import Control.Applicative
 import qualified Data.Attoparsec as AP (takeWhile)
 import qualified Data.Attoparsec.Char8 as AP (take)
 import Data.Attoparsec.Char8 hiding (take)
